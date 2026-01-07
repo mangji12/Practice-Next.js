@@ -4,31 +4,35 @@ import { ReactNode, useEffect } from "react"
 import books from "@/mock/books.json"
 import BookItem from "@/components/book-item"
 import { InferGetStaticPropsType } from "next"
+import fetchBooks from "@/lib/fetch-books"
+import fetchRandomBooks from "@/lib/fetch-random-books"
 
-export const getServerSideProps = () => {
+export const getServerSideProps = async() => {
   // 컴포넌트보다 먼저 실행되어서 컴포넌트에 필요한 데이터 불러오는 함수 (서버에서만 실행됨. 클라이언트에서는 볼 수 없음.)
+  const [allBooks, recoBooks] = await Promise.all([ // Promise.all() : 인수로 전달한 배열안에 들어있는 모든 비동기 함수를 동시에 실행시키는 메서드
+    fetchBooks(),
+    fetchRandomBooks(),
+  ])
+
   return {
     props: {
-      books,
+      allBooks,
+      recoBooks,
     }
   }
 } // 현재페이지 SSR 완성!
 
-export default function Home({books}: InferGetStaticPropsType<typeof getServerSideProps>){
+export default function Home({allBooks, recoBooks,}: InferGetStaticPropsType<typeof getServerSideProps>){
+  console.log(allBooks)
 
-  useEffect(() => {
-    console.log(window) // 해당 함수는 SSR 적용 시 서버 한번 클라이언트 한번 실행되는데 windows.location등의 함수는 실행되지 않는데 useEffect를 사용하면 문제없이 실행이 된다.
-  }, [])
-
-  console.log(books)
   return <div className={style.container}>
     <section>
       <h3>지금 추천하는 도서</h3>
-      {books.map((book) => <BookItem key={book.id} {...book}/>)}
+      {recoBooks.map((book) => <BookItem key={book.id} {...book}/>)}
     </section>
     <section>
       <h3>등록된 모든 도서</h3>
-      {books.map((book) => <BookItem key={book.id} {...book}/>)}
+      {allBooks.map((book) => <BookItem key={book.id} {...book}/>)}
     </section>
   </div>
   
