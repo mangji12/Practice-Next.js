@@ -1,6 +1,24 @@
+import GlobalLayout from "@/components/global-layout";
 import "@/styles/globals.css";
+import { NextPage } from "next";
 import type { AppProps } from "next/app";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { ReactNode, useEffect } from "react";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactNode) => ReactNode;
 }
+
+export default function App({ Component, pageProps }: AppProps & {
+  Component: NextPageWithLayout
+}) {
+  const getLayout = Component.getLayout ?? ((page : ReactNode) => page);
+  
+  return (
+    <GlobalLayout>
+        {getLayout(<Component {...pageProps} />)}
+    </GlobalLayout>
+  )
+}
+
