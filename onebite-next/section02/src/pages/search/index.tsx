@@ -1,28 +1,45 @@
 import SearchableLayout from "@/components/searchable-layout";
 import { useRouter } from "next/router" // 쿼리 스트링을 쓰기 위한 라이브러리
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import BookItem from "@/components/book-item";
-import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, GetStaticPropsContext, InferGetServerSidePropsType, InferGetStaticPropsType } from "next";
 import fetchBooks from "@/lib/fetch-books";
+import { BookData } from "@/types";
 
-export const getServerSideProps = async (context : GetServerSidePropsContext) => {
+// export const getStaticProps = async (context : GetStaticPropsContext) => {
 
-  const q = context.query.q;
-  const books = await fetchBooks(q as string)
+//   const q = context.query.q;
+//   const books = await fetchBooks(q as string)
 
-  return {
-    props : {
-      books,
-    }
+//   return {
+//     props : {
+//       books,
+//     }
+//   }
+// }
+
+export default function Page(){
+  const [books, setBooks] = useState<BookData[]>([])
+
+  const router = useRouter();
+  const q = router.query.q;
+
+  const fetchSearchResult = async() => {
+    const data = await fetchBooks(q as string)
+    setBooks(data)
   }
-}
 
-export default function Page({books} : InferGetServerSidePropsType<typeof getServerSideProps>){
-    return <div>
-      {books.map((book) => 
-        <BookItem key={book.id} {...book}/>
-      )}
-    </div>
+  useEffect(() => {
+    if (q) {
+      fetchSearchResult();
+    }
+  },[q])
+
+  return <div>
+    {books.map((book) => 
+      <BookItem key={book.id} {...book}/>
+    )}
+  </div>
 }
 
 Page.getLayout = (page: ReactNode) => {

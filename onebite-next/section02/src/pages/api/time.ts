@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextApiRequest, NextApiResponse } from "next"
 
 export default function handler(
-    req: NextRequest,
-    res: NextResponse
+    req: NextApiRequest,
+    res: NextApiResponse
 ) {
-    const date = new Date();
+    const date = new Date
     res.json({time: date.toLocaleString() });
 }
