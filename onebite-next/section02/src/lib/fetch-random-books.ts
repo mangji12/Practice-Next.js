@@ -13,6 +13,6 @@ export default async function fetchRandomBooks() : Promise<BookData[]> {
     }
     catch(err) {
         console.error(err);
-        return [];
+        return [];``
     }
 }
