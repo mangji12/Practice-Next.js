@@ -4,7 +4,7 @@ import books from "@/mock/books.json";
 import { BookData } from "@/types";
 
 async function AllBooks () {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`)
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`, { next : {revalidate : 3}})
   if(!response.ok) {
     console.log(response)
     return <div>오류가 발생했습니다.</div>

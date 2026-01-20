@@ -7,7 +7,12 @@ const nextConfig: NextConfig = {
     allowedDevOrigins: [
       "3000-firebase-my-nextjs-app-1765356299225.cluster-isls3qj2gbd5qs4jkjqvhahfv6.cloudworkstations.dev"
     ]
-  } as any // 타입을 강제로 지정해서 실행 시점에 옵션이 들어가게 함
+  } as any, // 타입을 강제로 지정해서 실행 시점에 옵션이 들어가게 함
+  logging : {
+    fetches : {
+      fullUrl: true,
+    }
+  }
 };
 
 export default nextConfig;
